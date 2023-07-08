@@ -1,89 +1,67 @@
 using System;
 using System.Collections.Generic;
 
-// Base class for all goals
 public abstract class Goal
 {
-    public string Name { get; protected set; }
-    public bool Completed { get; protected set; }
-
+    public string Name { get; set; }
+    
+    public abstract void MarkComplete();
     public abstract int CalculatePoints();
-
-    public void MarkComplete()
-    {
-        Completed = true;
-    }
 }
 
-// Simple goal that can be marked complete
 public class SimpleGoal : Goal
 {
-    private int points;
-
-    public SimpleGoal(string name, int points)
+    public override void MarkComplete()
     {
-        Name = name;
-        this.points = points;
+        // Marking logic for simple goal
     }
 
     public override int CalculatePoints()
     {
-        return Completed ? points : 0;
+        // Points calculation logic for simple goal
+        return 1000;
     }
 }
 
-// Eternal goal that can be recorded multiple times
 public class EternalGoal : Goal
 {
-    private int points;
-
-    public EternalGoal(string name, int points)
+    public override void MarkComplete()
     {
-        Name = name;
-        this.points = points;
+        // Marking logic for eternal goal
     }
 
     public override int CalculatePoints()
     {
-        return points;
+        // Points calculation logic for eternal goal
+        return 100;
     }
 }
 
-// Checklist goal that requires a certain number of completions
 public class ChecklistGoal : Goal
 {
-    private int pointsPerCompletion;
-    private int targetCount;
-    private int bonusPoints;
-    private int completionCount;
+    public int CompletionCount { get; set; }
+    public int TargetCount { get; set; }
 
-    public ChecklistGoal(string name, int pointsPerCompletion, int targetCount, int bonusPoints)
+    public override void MarkComplete()
     {
-        Name = name;
-        this.pointsPerCompletion = pointsPerCompletion;
-        this.targetCount = targetCount;
-        this.bonusPoints = bonusPoints;
+        // Marking logic for checklist goal
+        CompletionCount++;
     }
 
     public override int CalculatePoints()
     {
-        int totalPoints = completionCount * pointsPerCompletion;
-        if (Completed)
-            totalPoints += bonusPoints;
-        return totalPoints;
+        // Points calculation logic for checklist goal
+        if (CompletionCount == TargetCount)
+            return 500; // Bonus points
+        else
+            return 50;
     }
-
-    public new void MarkComplete()
-    {
-        completionCount++;
-        if (completionCount >= targetCount)
-            Completed = true;
-    }
-
-    public int CompletionCount { get { return completionCount; } }
-    public int TargetCount { get { return targetCount; } }
 }
 
+// Usage:
+Goal goal1 = new SimpleGoal();
+Goal goal2 = new EternalGoal();
+Goal goal3 = new ChecklistGoal();
 // Player class to track goals and score
 public class Player
 {
